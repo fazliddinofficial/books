@@ -160,6 +160,38 @@ reviewRoute.delete("/reviews/:userId", async (req, res) => {
   }
 });
 
+reviewRoute.get('/books/search-title', (req, res) => {
+  const { title } = req.query;
+
+  if (!title) {
+    return res.status(400).json({ message: 'Title query is required' });
+  }
+
+  Book.find({ title: new RegExp(title, 'i') }) 
+    .then(books => {
+      res.json(books);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Error searching books by title', error: err.message });
+    });
+});
+
+bookRoute.get('/books/isbn/:isbn', (req, res) => {
+  const { isbn } = req.params;
+
+  Book.findOne({ isbn: isbn })
+    .then(book => {
+      if (!book) {
+        return res.status(404).json({ message: 'Book not found' });
+      }
+      res.json(book);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Error searching by ISBN', error: err.message });
+    });
+});
+
+
 app.listen(PORT, () => {
   connect(MONGODB_URL)
     .then(() => {

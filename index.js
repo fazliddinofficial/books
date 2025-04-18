@@ -75,6 +75,27 @@ userRoute.post("/auth/signUp", async (req, res) => {
   }
 });
 
+userRoute.post("auth/login", async (req, res) => {
+  try {
+    const data = req.body.data;
+
+    const foundUser = await User.findOne({ email: data.email });
+
+    if (!foundUser) {
+      res.status(404).send("User not found!");
+      return;
+    }
+
+    const token = jwt.sign({ user: foundUser.email }, JWT_SECRET_KEY, {
+      expiresIn: "24h",
+    });
+
+    res.status(200).send({ token: token, user: foundUser });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 app.listen(PORT, () => {
   connect(MONGODB_URL)
     .then(() => {

@@ -1,4 +1,5 @@
 export const SCHEMA_NAMES = {
-  BOOK: 'book',
-  USER: 'user'
-}
+  BOOK: "book",
+  USER: "user",
+  REVIEW: "review",
+};

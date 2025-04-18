@@ -96,6 +96,23 @@ userRoute.post("auth/login", async (req, res) => {
   }
 });
 
+app.get('/books/isbn/:isbn', (req, res) => {
+  const { isbn } = req.params;
+
+  Book.findOne({ ISBN: isbn })
+    .then(book => {
+      if (!book) {
+        return res.status(404).json({ message: 'Book not found' });
+      }
+      res.json(book);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Error finding book by ISBN', error: err.message });
+    });
+});
+
+
+
 app.listen(PORT, () => {
   connect(MONGODB_URL)
     .then(() => {

@@ -100,23 +100,6 @@ userRoute.post("/auth/login", async (req, res) => {
   }
 });
 
-bookRoute.get("/books/isbn/:isbn", (req, res) => {
-  const { isbn } = req.params;
-
-  Book.findOne({ ISBN: isbn })
-    .then((book) => {
-      if (!book) {
-        return res.status(404).json({ message: "Book not found" });
-      }
-      res.json(book);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ message: "Error finding book by ISBN", error: err.message });
-    });
-});
-
 reviewRoute.post("/reviews", async (req, res) => {
   try {
     const data = req.body;
@@ -125,7 +108,7 @@ reviewRoute.post("/reviews", async (req, res) => {
 
     res.status(201).send(createdReview);
   } catch (error) {
-    res.status(500).send('Internal server error!')
+    res.status(500).send("Internal server error!");
   }
 });
 
@@ -144,7 +127,7 @@ reviewRoute.put("/reviews/:id", async (req, res) => {
 
     res.status(200).send(foundReview);
   } catch (error) {
-    res.status(500).send('Internal server error!')
+    res.status(500).send("Internal server error!");
   }
 });
 
@@ -155,13 +138,25 @@ reviewRoute.delete("/reviews/:id", async (req, res) => {
     const deletedReview = await Review.findByIdAndDelete(id);
 
     if (!deletedReview) {
-      res.status(404).send('Review not found!');
+      res.status(404).send("Review not found!");
       return;
     }
 
-    res.status(200).send('Review deleted!')
+    res.status(200).send("Review deleted!");
   } catch (error) {
     throw new Error(error);
+  }
+});
+
+reviewRoute.delete("/reviews/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    await Review.findOneAndDelete({ userId: userId });
+
+    res.status(200).send("Review deleted successfully!");
+  } catch (error) {
+    res.status(500).send("Internal server error!");
   }
 });
 

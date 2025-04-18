@@ -29,13 +29,27 @@ app.get("/books/:isbn", async (req, res) => {
   }
 });
 
-app.get('/books/author/:authorName', async (req, res) => {
+app.get("/books/author/:authorName", async (req, res) => {
   const { authorName } = req.params;
   try {
     const books = await Book.find({ author: authorName });
     res.json(books);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching books by author', error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching books by author", error: err.message });
+  }
+});
+
+app.get("/books/:title", async (req, res) => {
+  try {
+    const { title } = req.params;
+
+    const foundBooks = await Book.find({ title: title });
+
+    res.status(200).json(foundBooks);
+  } catch (error) {
+    throw new Error(error);
   }
 });
 

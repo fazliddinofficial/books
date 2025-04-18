@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { SCHEMA_NAMES } from "../constant/modelNames.js";
 
 const bookSchema = new Schema({
-  name: String,
+  title: String,
   price: String,
   ISBN: String,
   authorName: String,

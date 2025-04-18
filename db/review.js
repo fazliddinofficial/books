@@ -1,4 +1,5 @@
 import { model, Schema, Types } from "mongoose";
+import { SCHEMA_NAMES } from "../constant/modelNames.js";
 
 const reviewSchema = new Schema(
   {
@@ -9,4 +10,4 @@ const reviewSchema = new Schema(
   { timestamps: true }
 );
 
-export const Review = model();
+export const Review = model(SCHEMA_NAMES.REVIEW, reviewSchema);

@@ -1,12 +1,16 @@
 import express from "express";
-import { connect, trusted } from "mongoose";
+import { connect } from "mongoose";
 import { Book } from "./db/book.js";
 import { User } from "./db/user.js";
+import { Review } from "./db/review.js";
 import jwt from "jsonwebtoken";
 
 const app = express();
 const bookRoute = express();
 const userRoute = express();
+const reviewRoute = express();
+
+app.use(express.json());
 
 const PORT = 4000;
 const MONGODB_URL = "mongodb://localhost:27017/book";
@@ -75,7 +79,7 @@ userRoute.post("/auth/signUp", async (req, res) => {
   }
 });
 
-userRoute.post("auth/login", async (req, res) => {
+userRoute.post("/auth/login", async (req, res) => {
   try {
     const data = req.body.data;
 
@@ -96,22 +100,70 @@ userRoute.post("auth/login", async (req, res) => {
   }
 });
 
-app.get('/books/isbn/:isbn', (req, res) => {
+bookRoute.get("/books/isbn/:isbn", (req, res) => {
   const { isbn } = req.params;
 
   Book.findOne({ ISBN: isbn })
-    .then(book => {
+    .then((book) => {
       if (!book) {
-        return res.status(404).json({ message: 'Book not found' });
+        return res.status(404).json({ message: "Book not found" });
       }
       res.json(book);
     })
-    .catch(err => {
-      res.status(500).json({ message: 'Error finding book by ISBN', error: err.message });
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ message: "Error finding book by ISBN", error: err.message });
     });
 });
 
+reviewRoute.post("/reviews", async (req, res) => {
+  try {
+    const data = req.body;
 
+    const createdReview = await Review.create(data);
+
+    res.status(201).send(createdReview);
+  } catch (error) {
+    res.status(500).send('Internal server error!')
+  }
+});
+
+reviewRoute.put("/reviews/:id", async (req, res) => {
+  try {
+    const reviewId = req.params.id;
+
+    const foundReview = await Review.findByIdAndUpdate(reviewId, req.body, {
+      new: true,
+    });
+
+    if (!foundReview) {
+      res.status(404).send("Review not found!");
+      return;
+    }
+
+    res.status(200).send(foundReview);
+  } catch (error) {
+    res.status(500).send('Internal server error!')
+  }
+});
+
+reviewRoute.delete("/reviews/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const deletedReview = await Review.findByIdAndDelete(id);
+
+    if (!deletedReview) {
+      res.status(404).send('Review not found!');
+      return;
+    }
+
+    res.status(200).send('Review deleted!')
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 app.listen(PORT, () => {
   connect(MONGODB_URL)

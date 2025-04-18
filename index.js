@@ -29,7 +29,15 @@ app.get("/books/:isbn", async (req, res) => {
   }
 });
 
-app.get('/books/book')
+app.get('/books/author/:authorName', async (req, res) => {
+  const { authorName } = req.params;
+  try {
+    const books = await Book.find({ author: authorName });
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching books by author', error: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   connect(MONGODB_URL)

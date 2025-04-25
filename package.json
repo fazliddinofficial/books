@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "This is a Node.js backend project for managing books, users, and book reviews.",
   "dependencies": {
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -17,6 +17,15 @@
     "mongoose": "^8.13.2"
   },
   "devDependencies": {
+    "jasmine": "^5.6.0",
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fazliddinofficial/books.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fazliddinofficial/books/issues"
+  },
+  "homepage": "https://github.com/fazliddinofficial/books#readme"
 }
